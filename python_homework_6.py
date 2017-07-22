@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
 
 import re
 
 
 def import_cookbook():
     dish_list = []
-    dishes_with_ingredients = []
+    ingredients_list = []
     dish_number = 0
     dish_stats = ["ingredient_name", "quantity", "measure"]
     cook_book = {}
+    ingredients_count = 0
     with open(file="recipes.txt") as f:
         for line in f:
             if re.match('^[а-яА-Я]\D*$', line):
@@ -19,10 +19,9 @@ def import_cookbook():
                 dish_number += 1  # номер блюда из списка
                 # print(ingredients_count)
             if re.match('^[а-яА-Я]*\s\|\s\d*\s\|\s[а-яА-Я]*$', line):
-                dish_ingredients_list = line.split(" | ")
-                dish_ingredients = dict(zip(dish_stats, dish_ingredients_list))  # создание словарей ингредиентов
-                dishes_with_ingredients.append(dish_ingredients)  # список словарей ингредиентов
-                cook_book.update({dish_list[dish_number-1]: dishes_with_ingredients[0:ingredients_count]})
+                dish_ingredients_list = line.strip().split(" | ")
+                ingredients_list.append(dict(zip(dish_stats, dish_ingredients_list)))  # список словарей ингредиентов
+                cook_book.update({dish_list[dish_number-1]: ingredients_list[0:ingredients_count]})
     print(cook_book)
 
 import_cookbook()
