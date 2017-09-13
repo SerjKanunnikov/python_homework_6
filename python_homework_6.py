@@ -5,24 +5,13 @@ import re
 def import_cookbook():
     cook_book = {}
     dish_list = []  # список блюд
-    # ingredients_list = []  # список ингридиентов
-    dish_number = 0  # номер блюда для использования в списке
     ingredient_stats = ["ingredient_name", "quantity", "measure"]  # свойства ингридиента
-    ingredients_count = 0  # счетчик ингредиентов
-    left_index = 0  # левая граница для перебора списка ингредиентов
-    ingredients_count_list = []
     with open(file="recipes.txt", encoding="utf-8") as f:
         for line in f:
             if re.match('^[а-яА-Я]\W*\D*\d*$', line):  # регулярка для поиска названий блюд
                 dish_list.append(line.split(' ', 1)[0].strip())  # создание списка блюд
-                left_index += ingredients_count
                 current_dish = line.strip()
                 ingredients_list = []
-                continue
-            if re.match('^\d$', line):  # регулярка для поиска количества ингредиентов
-                ingredients_count = int(line)
-                dish_number += 1  # номер блюда из списка
-                ingredients_count_list.append(ingredients_count)
                 continue
             if re.match('^([а-яА-Я]*\s)*\|\s\d*\s\|\s[а-яА-Я]*$', line):  # регулярка для поиска строки со свойствами ингредиента
                 dish_ingredients_list = line.strip().split(" | ")
