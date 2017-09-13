@@ -31,8 +31,6 @@ def import_cookbook():
                     cook_book.update({current_dish.strip(): ingredients_list})
                     ingredients_list = []
                 cook_book.update({current_dish: ingredients_list})
-    print(cook_book)
-    print(ingredients_list)
     return cook_book
 
 
