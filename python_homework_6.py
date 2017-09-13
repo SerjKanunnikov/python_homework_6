@@ -5,25 +5,34 @@ import re
 def import_cookbook():
     cook_book = {}
     dish_list = []  # список блюд
-    ingredients_list = []  # список ингридиентов
+    # ingredients_list = []  # список ингридиентов
     dish_number = 0  # номер блюда для использования в списке
     ingredient_stats = ["ingredient_name", "quantity", "measure"]  # свойства ингридиента
     ingredients_count = 0  # счетчик ингредиентов
     left_index = 0  # левая граница для перебора списка ингредиентов
     ingredients_count_list = []
-    with open(file="recipes.txt") as f:
+    with open(file="recipes.txt", encoding="utf-8") as f:
         for line in f:
-            if re.match('^[а-яА-Я]\D*$', line):  # регулярка для поиска названий блюд
+            if re.match('^[а-яА-Я]\W*\D*\d*$', line):  # регулярка для поиска названий блюд
                 dish_list.append(line.split(' ', 1)[0].strip())  # создание списка блюд
                 left_index += ingredients_count
+                current_dish = line.strip()
+                ingredients_list = []
+                continue
             if re.match('^\d$', line):  # регулярка для поиска количества ингредиентов
                 ingredients_count = int(line)
                 dish_number += 1  # номер блюда из списка
                 ingredients_count_list.append(ingredients_count)
-            if re.match('^[а-яА-Я]*\s\|\s\d*\s\|\s[а-яА-Я]*$', line):  # регулярка для поиска строки со свойствами ингредиента
+                continue
+            if re.match('^([а-яА-Я]*\s)*\|\s\d*\s\|\s[а-яА-Я]*$', line):  # регулярка для поиска строки со свойствами ингредиента
                 dish_ingredients_list = line.strip().split(" | ")
-                ingredients_list.append(dict(zip(ingredient_stats, dish_ingredients_list)))  # список словарей ингредиентов
-                cook_book.update({dish_list[dish_number-1]: ingredients_list[left_index:left_index+ingredients_count]})
+                ingredients_list.append(dict(zip(ingredient_stats, dish_ingredients_list))) # список словарей ингредиентов
+                if not line.strip():
+                    cook_book.update({current_dish.strip(): ingredients_list})
+                    ingredients_list = []
+                cook_book.update({current_dish: ingredients_list})
+    print(cook_book)
+    print(ingredients_list)
     return cook_book
 
 
@@ -47,7 +56,7 @@ def print_shop_list(shop_list):
 
 def create_shop_list(cook_book):
     person_count = int(input('Введите количество человек: '))
-    dishes = input('Введите блюда в расчете на одного человека (через запятую): ').lower().split(', ')
+    dishes = [x.strip() for x in input('Введите блюда в расчете на одного человека (через запятую): ').lower().split(', ')]
     shop_list = get_shop_list_by_dishes(dishes, person_count, cook_book)
     print_shop_list(shop_list)
 
