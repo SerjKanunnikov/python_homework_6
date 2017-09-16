@@ -1,23 +1,20 @@
-import json
 import re
 
 
 def import_cookbook():
     cook_book = {}
-    dish_list = []  # список блюд
-    ingredient_stats = ["ingredient_name", "quantity", "measure"]  # свойства ингридиента
+    ingredient_stats = ["ingredient_name", "quantity", "measure"]  # свойства ингредиента
     with open(file="recipes.txt", encoding="utf-8") as f:
         for line in f:
-            if re.match('^[а-яА-Я]\W*\D*\d*$', line):  # регулярка для поиска названий блюд
-                dish_list.append(line.split(' ', 1)[0].strip())  # создание списка блюд
-                current_dish = line.strip()
-                ingredients_list = []
-                continue
-            if re.match('^([а-яА-Я]*\s)*\|\s\d*\s\|\s[а-яА-Я]*$', line):  # регулярка для поиска строки со свойствами ингредиента
-                dish_ingredients_list = line.strip().split(" | ")
-                ingredients_list.append(dict(zip(ingredient_stats, dish_ingredients_list))) # список словарей ингредиентов
+            if not re.match('^\d$', line):
+                if re.match('^\w*\W*\D*\d*$', line):  # регулярка для поиска названий блюд
+                    current_dish = line.strip()
+                    ingredients_list = []
+                    continue
+                if re.match('^(\w*\s)*\|\s\d*\s\|\s\w*$', line):  # регулярка для поиска строки со свойствами ингредиента
+                    dish_ingredients_list = line.strip().split(" | ")
+                    ingredients_list.append(dict(zip(ingredient_stats, dish_ingredients_list)))  # список словарей ингредиентов
                 if not line.strip():
-                    cook_book.update({current_dish.strip(): ingredients_list})
                     ingredients_list = []
                 cook_book.update({current_dish: ingredients_list})
     return cook_book
